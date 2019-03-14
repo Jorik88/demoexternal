@@ -1,25 +1,22 @@
 package com.example.demoexternal;
 
-import com.example.demoexternal.model.RawTransferRequest;
+import com.example.demoexternal.enums.TransferRequestStatus;
 import com.example.demoexternal.model.TransferRequest;
+import com.example.demoexternal.repository.ITransferRepositoryDao;
 import com.example.demoexternal.repository.TransferRepository;
+import com.example.demoexternal.service.TransferService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import sun.net.www.http.HttpClient;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,6 +24,12 @@ public class DemoexternalApplicationTests {
 
 	@Autowired
 	private TransferRepository repository;
+
+	@Autowired
+	private TransferService service;
+
+	@Autowired
+	private ITransferRepositoryDao transferRepositoryDao;
 
 	@Test
 	public void contextLoads() {
@@ -36,17 +39,15 @@ public class DemoexternalApplicationTests {
 		transferRequest.setPaymentSystem("Bepaid");
 		transferRequest.setTargetWallet("34242354345346546");
 		transferRequest.setTransferRequestId("some id");
+		transferRequest.setStatus(TransferRequestStatus.WAITING);
 
-		RawTransferRequest rawTransferRequest = new RawTransferRequest();
-		BeanUtils.copyProperties(transferRequest, rawTransferRequest);
-
-		repository.save(rawTransferRequest);
+		repository.save(transferRequest);
 	}
 
 	@Test
 	public void testGetTransfer() {
-		List<RawTransferRequest> all = repository.findAll();
-		System.out.println(all);
+//		List<RawTransferRequest> all = repository.findAll();
+//		System.out.println(all);
 	}
 
 	@Test
@@ -66,4 +67,16 @@ public class DemoexternalApplicationTests {
 		return new HttpEntity<>(headers);
 	}
 
+	@Test
+	public void testService() {
+//		service.first();
+		service.updateStatus("5c8a2d9a875d333c48c2ef24");
+	}
+
+	@Test
+	public void testUpdateTransferRequest() {
+		String transferId = "5c8a2d9a875d333c48c2ef24";
+		boolean result = transferRepositoryDao.findAndModifyByIdAndStatus(transferId, TransferRequestStatus.WAITING.name());
+		System.out.println(result);
+	}
 }
