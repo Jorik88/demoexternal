@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Bepaid Money Payment</title>
+</head>
+<body>
+
+<form id="sendForm" th:action="${url}" method="get">
+<p>
+    <input type="hidden" name="sum" th:value="${sum}"/>
+    <input type="hidden" name="account" th:value="${account}"/>
+    <input type="hidden" name="desc" th:value="${desc}"/>
+    <input type="hidden" name="hideMenu" value="true"/>
+    <input type="hidden" name="hideOtherMethods" value="true"/>
+    <input type="hidden" name="hideOtherPSMethods" value="true"/>
+</p>
+</form>
+
+<script>
+    document.getElementById('sendForm').submit();
+</script>
+</body>
+</html>
